@@ -1,11 +1,11 @@
 /* oam_net on AmigaOS 3.x and AROS 68k: bsdsocket.library (any stack:
- * Roadshow, AmiTCP, Miami, or OpenSocket, AmigaChrome's) and, for TLS,
- * the Team's own opentls.library (OpenTLS, DalsinAI/openamigatls). The
+ * Roadshow, AmiTCP, Miami, or GFOpenSocket, AmiCradle's) and, for TLS,
+ * the Team's own gfopentls.library (GFOpenTLS, DalsinAI/openamigatls). The
  * calling task opens them in oam_net_init: their bases are the task's own.
- * OpenTLS checks the server's certificate against its CA list (S:OpenTLS/,
- * and ENVARC:OpenTLS/certs/) and the server's name.
- * 0.3.1 (10 October 2026): OpenTLS first, AmiSSL 5 when built in.
- * 0.3.3 (19 October 2026): OpenTLS only; AmiSSL is gone, code and build
+ * GFOpenTLS checks the server's certificate against its CA list (S:GFOpenTLS/,
+ * and ENVARC:GFOpenTLS/certs/) and the server's name.
+ * 0.3.1 (10 October 2026): GFOpenTLS first, AmiSSL 5 when built in.
+ * 0.3.3 (19 October 2026): GFOpenTLS only; AmiSSL is gone, code and build
  * option. */
 #include "oam_net.h"
 
@@ -26,12 +26,12 @@ struct Library *SocketBase, *OpenTLSBase;
 void (*oam_net_progress)(const char *step);
 #define STEP(s) do { if (oam_net_progress) oam_net_progress(s); } while (0)
 
-static struct OTContext *ot_ctx;           /* OpenTLS: one context for the task */
+static struct OTContext *ot_ctx;           /* GFOpenTLS: one context for the task */
 static int net_ready;
 
 struct oam_conn {
     long fd;
-    struct OTConnection *ot;                /* OpenTLS */
+    struct OTConnection *ot;                /* GFOpenTLS */
     int timeout;            /* seconds a read waits; 0 for ever */
     char error[200];
 };
@@ -41,13 +41,13 @@ static void set_err(char *err, size_t errlen, const char *what)
     if (err && errlen) snprintf(err, errlen, "%s", what);
 }
 
-/* OpenTLS when it is installed: 1 ready, 0 not there or not usable */
+/* GFOpenTLS when it is installed: 1 ready, 0 not there or not usable */
 static int open_opentls(void)
 {
     struct OTContextConfig config;
     LONG error = 0;
     if (ot_ctx) return 1;
-    STEP("opening opentls.library");
+    STEP("opening gfopentls.library");
     OpenTLSBase = OpenLibrary((CONST_STRPTR)OPENTLSLIB_NAME, OPENTLSLIB_VERSION);
     if (!OpenTLSBase) return 0;
     memset(&config, 0, sizeof config);
@@ -72,7 +72,7 @@ int oam_net_init(char *err, size_t errlen)
     }
     SocketBaseTags(SBTM_SETVAL(SBTC_ERRNOPTR(sizeof errno)), (ULONG)&errno, TAG_DONE);
     if (!open_opentls()) {
-        set_err(err, errlen, "OpenTLS (opentls.library) is not installed: OpenUp's OpenTLS part puts it in LIBS:.");
+        set_err(err, errlen, "GFOpenTLS (gfopentls.library) is not installed: GFOpenUp's GFOpenTLS part puts it in LIBS:.");
         oam_net_cleanup();
         return 0;
     }

@@ -1,4 +1,4 @@
-/* OpenMail engine tests on the host.
+/* GFOpenMail engine tests on the host.
  *   test_engine unit                 the engine's pieces on their own
  *   test_engine imap SCENARIO PORT   a session against fake_imapd.py
  *   test_engine imap deep PORT       LIST answers nested 64, 65, 5000 and a million lists deep
@@ -105,7 +105,7 @@ static void check_decode(const char *in, const char *want)
 static void unit_provider(void)
 {
     static const char gmail[] =
-        "# Gmail, the way OpenMail ships it\n"
+        "# Gmail, the way GFOpenMail ships it\n"
         "name    = Gmail\n"
         "domains = gmail.com googlemail.com\n"
         "imap    = imap.gmail.com 993 tls\n"
@@ -182,7 +182,7 @@ static void unit_links(void)
     link_case("mailto:someone@example.org?subject=Hi there", "mailto:someone@example.org?subject=Hi there");
     link_case("  https://x.org/  ", "https://x.org/");
     link_case("https://x.org/caf\xc3\xa9", "https://x.org/caf\xc3\xa9");
-    /* what the Shell acts on inside the quotes of ENV:OpenMail/Browser's line */
+    /* what the Shell acts on inside the quotes of ENV:GFOpenMail/Browser's line */
     link_case("https://x.org/\" +Delete SYS: ALL \"", "https://x.org/%22 +Delete SYS: ALL %22");
     link_case("https://x.org/`Delete SYS: ALL`", "https://x.org/%60Delete SYS: ALL%60");
     link_case("https://x.org/*\"x", "https://x.org/%2A%22x");

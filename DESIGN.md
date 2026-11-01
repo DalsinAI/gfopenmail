@@ -1,6 +1,6 @@
-# OpenMail: design
+# GFOpenMail: design
 
-OpenMail (KyneMail, then OpenAmigaMail, until 4 October 2026) is a full mail client for AmigaOS 3.2.3, and AROS 68k second.
+GFOpenMail (KyneMail, then OpenAmigaMail, until 4 October 2026) is a full mail client for AmigaOS 3.2.3, and AROS 68k second.
 
 Our requirements, 4 October 2026:
 - **A GadTools UI** for a full mail client, "as modern as possible".
@@ -13,10 +13,10 @@ Our requirements, 4 October 2026:
  the window (GadTools, the program's own task)
      |  jobs, as exec messages: connect, list, select, fetch, flag, send
      v
- the worker (a process of its own; it owns bsdsocket.library and the TLS library: OpenTLS)
+ the worker (a process of its own; it owns bsdsocket.library and the TLS library: GFOpenTLS)
      |  the engine: oam_imap, oam_smtp, MIME, the store
      v
- OpenSocket, or any bsdsocket.library  ->  the mail servers
+ GFOpenSocket, or any bsdsocket.library  ->  the mail servers
 ```
 
 - **Why two tasks.**
@@ -32,18 +32,18 @@ Our requirements, 4 October 2026:
 
 ## 2. The window: an Outlook-style desk (GadTools)
 
-We, 4 October 2026: "I'd like OpenMail to have a more Outlook feel: icons
+We, 4 October 2026: "I'd like GFOpenMail to have a more Outlook feel: icons
 for buttons, some features you would expect, a side panel for folders."
-And on sign-in: "really we want OpenMail to do this" (OAuth).
+And on sign-in: "really we want GFOpenMail to do this" (OAuth).
 
-**Mock-up:** the "OpenMail Desk" canvas,
+**Mock-up:** the "GFOpenMail Desk" canvas,
 in the Team's design archive. It has four boards:
 - the desk in the Open theme;
 - writing a reply;
 - the Open theme, dark;
 - the Graphite theme.
 
-The colours are those of OpenGadTools' theme files, and every text colour
+The colours are those of GFOpenGadTools' theme files, and every text colour
 on it meets 4.5:1.
 
 ```
@@ -52,12 +52,12 @@ on it meets 4.5:1.
 |            |                             | [Flag][Unread] | [Get mail]  [Search mail]|
 +--------------+---------------------------+-------------------------------------+
 | Favourites   | Inbox  Home  [All][Unread][Flagged]                             |
-|  Inbox    12 | Today                     | Re: OpenFiles tabs                  |
+|  Inbox    12 | Today                     | Re: GFOpenFiles tabs                  |
 |  Flagged   3 | | Jo Taylor    09:42 flag | (SR) Sam Rivers <sam@example.com>   |
 |  Drafts    1 | |  Saturday meet: who...  |      To: Kim Example   Today 07:58  |
 |  Sent        | |  I can bring the pro... |      [Reply] [Reply all] [Forward]  |
 | Home         |   Sam Rivers   07:58 clip | [tabs-test.iff 38 KB  Open  Save...]|
-|  Inbox    12 |   Re: OpenFiles tabs     | ----------------------------------- |
+|  Inbox    12 |   Re: GFOpenFiles tabs     | ----------------------------------- |
 |  ...         | Yesterday                 | Hi Kim, ...                         |
 | Club (Gmail) |   ...                     |                                     |
 | + New folder |                           |                                     |
@@ -70,15 +70,15 @@ on it meets 4.5:1.
 ### The first size
 
 The window first opens at 800 x 600, centred in the screen's free area (below
-the title bar and beside OpenDock), and never larger than that area, so on a
+the title bar and beside GFOpenDock), and never larger than that area, so on a
 screen smaller than 800 x 600 it is the whole free area (the rule for every
-Open app, 10 October 2026, as in OpenFiles 0.2.3). A size the user gives the
-window is kept: OpenWindows remembers it.
+GFOpen app, 10 October 2026, as in GFOpenFiles 0.2.3). A size the user gives the
+window is kept: GFOpenWindows remembers it.
 
 ### The toolbar
 
-- **Icons,** following the common rules of OpenGadTools section 0. A
-  setting chooses icons only (the default: every Open app starts with
+- **Icons,** following the common rules of GFOpenGadTools section 0. A
+  setting chooses icons only (the default: every GFOpen app starts with
   icons, not icons and text, the Team's rule of 10 October 2026), icons
   and text, or text only, and help bubbles name every icon.
 - **The groups:**
@@ -89,8 +89,8 @@ window is kept: OpenWindows remembers it.
   - Get mail.
   - The search field sits on the right.
 - **The icons** are 24 x 24 in the OS 3.2 (GlowIcons) style, drawn for
-  OpenMail.
-- **How they're built:** until OpenGadTools' image buttons exist, each one is
+  GFOpenMail.
+- **How they're built:** until GFOpenGadTools' image buttons exist, each one is
   Intuition's `frbuttonclass` with our image, in the GadTools window.
 
 ### The folder side panel
@@ -125,7 +125,7 @@ window is kept: OpenWindows remembers it.
   subject bold in the accent colour.
   - **The selected message** has a soft accent fill.
 - **How it's built:** a GadTools listview with `GTLV_ItemHeight` and a render
-  hook (`GTLV_CallBack`, V39), until OpenGadTools' list class takes over.
+  hook (`GTLV_CallBack`, V39), until GFOpenGadTools' list class takes over.
 
 ### The reading pane
 
@@ -136,9 +136,9 @@ window is kept: OpenWindows remembers it.
     recipients and the date;
   - Reply, Reply all and Forward beside them;
   - **attachments as chips:** a picture, the name, the size, **Open**
-    (OpenView, through datatypes) and **Save...**.
+    (GFOpenView, through datatypes) and **Save...**.
 - **Pictures from the internet** stay blocked until "Show pictures" is
-  pressed, for privacy. Links open in OpenBrowser.
+  pressed, for privacy. Links open in GFOpenBrowser.
 
 ### The status bar
 
@@ -155,7 +155,7 @@ is busy, never frozen, as before.
   - To shows recipients as chips, completed from Contacts;
   - Cc and Bcc on request;
   - Subject.
-- **The editor** is OpenMail's own, as designed; GadTools has no multi-line
+- **The editor** is GFOpenMail's own, as designed; GadTools has no multi-line
   gadget.
 - **Under it:** "Plain text. Draft saved 08:12" and **Edit in your editor**
   (`ENV:EDITOR`).
@@ -173,11 +173,11 @@ is busy, never frozen, as before.
 | Flags and read state, synced both ways | M6 |
 | Move, copy and delete by dragging | M3b (IMAP MOVE and COPY) |
 | Compose, reply, forward; drafts saved as you type; signatures per account | M4 |
-| Attachments both ways, opened through OpenView | M5 |
+| Attachments both ways, opened through GFOpenView | M5 |
 | Offline reading from the local store | M6 |
 | Contacts with completion; rules (filters); junk handling | M7 |
 | New-mail notice and checking every N minutes | M3b |
-| Microsoft sign-in (OAuth): "Sign in with Microsoft..." in Accounts; the engine is ready (device code), and with OpenBrowser the sign-in page opens inside it | When we give the app registration's client ID |
+| Microsoft sign-in (OAuth): "Sign in with Microsoft..." in Accounts; the engine is ready (device code), and with GFOpenBrowser the sign-in page opens inside it | When we give the app registration's client ID |
 | Conversations (messages threaded by subject and references) | After M7 |
 
 **Keys** follow the menus' Amiga-key shortcuts:
@@ -187,13 +187,13 @@ is busy, never frozen, as before.
 - Del deletes;
 - cursor keys move in the list, and Return opens a message.
 
-**Themes:** OpenMail follows OpenGadTools' theme. Open, the OS 4-style theme,
+**Themes:** GFOpenMail follows GFOpenGadTools' theme. Open, the OS 4-style theme,
 is the closest to Outlook's feel. Until the look patch ships, it draws in
 the Classic look with the same layout.
 
 ## 3. Plugins: providers and sign-in methods
 
-Two kinds of plugin, so anyone can add a mail service or a sign-in method without changing OpenMail itself.
+Two kinds of plugin, so anyone can add a mail service or a sign-in method without changing GFOpenMail itself.
 
 ### Providers: data files
 
@@ -208,7 +208,7 @@ auth      = xoauth2-browser password
 oauth.authorize = https://accounts.google.com/o/oauth2/v2/auth
 oauth.token     = https://oauth2.googleapis.com/token
 oauth.scope     = https://mail.google.com/
-oauth.client    = <OpenMail's registered client id>
+oauth.client    = <GFOpenMail's registered client id>
 note      = Google wants OAuth; an app password works for accounts with 2-step verification.
 ```
 
@@ -230,15 +230,15 @@ note      = Google wants OAuth; an app password works for accounts with 2-step v
 
 - **What the context brings:**
   - the account and the provider's keys;
-  - callbacks into OpenMail: an HTTPS POST (through the worker's TLS, so a plugin needs no network code), the secret store, the log, and the browser hook.
+  - callbacks into GFOpenMail: an HTTPS POST (through the worker's TLS, so a plugin needs no network code), the secret store, the log, and the browser hook.
 - **Built in, behind the same interface:**
   - `password` (PLAIN and LOGIN);
   - `xoauth2-device` (Microsoft's device-code flow, entirely on the Amiga);
-  - `xoauth2-browser` (Google: the sign-in page opens through the browser hook, and the code comes back through AmigaChrome's host or a pasted code);
+  - `xoauth2-browser` (Google: the sign-in page opens through the browser hook, and the code comes back through AmiCradle's host or a pasted code);
   - `xoauth2-token` (a token from a file, as KyneMailCheck took it).
-- **External `.auth` libraries** load the same way. That lets later methods (Yahoo's OAuth, a corporate SSO) be shipped apart from OpenMail.
+- **External `.auth` libraries** load the same way. That lets later methods (Yahoo's OAuth, a corporate SSO) be shipped apart from GFOpenMail.
 - **Secrets:**
-  - Refresh tokens and passwords are kept in `ENVARC:OpenMail/Secrets`.
+  - Refresh tokens and passwords are kept in `ENVARC:GFOpenMail/Secrets`.
   - They are obscured with a key unique to the machine. It is not strong encryption, and the settings say so: the Amiga has no key store.
   - Passwords are never written to the log or to a trace.
 
@@ -251,15 +251,15 @@ note      = Google wants OAuth; an app password works for accounts with 2-step v
   - links numbered [1] [2], with their addresses in "Links...";
   - images replaced by their alt text.
 
-  OpenMail fetches nothing from the network to show a message, so there are no tracking pixels.
-- **"View in browser"** writes the HTML part and its inline images (`cid:`) to `T:OpenMail/<uid>/` as files. It then hands `index.html` to the browser hook.
+  GFOpenMail fetches nothing from the network to show a message, so there are no tracking pixels.
+- **"View in browser"** writes the HTML part and its inline images (`cid:`) to `T:GFOpenMail/<uid>/` as files. It then hands `index.html` to the browser hook.
 - **The browser hook** (`include/oam_browser.h`) opens a URL or a file. It tries these in order:
-  1. `ENV:OpenMail/Browser`, a command with `%s` for the address, if the user set one;
-  2. AmigaChrome's browser, through its ARexx port. The name is reserved as `AMIGACHROME.BROWSER`, with the commands `OPENURL url` and `OPENFILE path`. That is the hook for "our website browser later": once that browser answers on the port, OpenMail uses it with no change;
+  1. `ENV:GFOpenMail/Browser`, a command with `%s` for the address, if the user set one;
+  2. AmiCradle's browser, through its ARexx port. The name is reserved as `AMICRADLE.BROWSER`, with the commands `OPENURL url` and `OPENFILE path`. That is the hook for "our website browser later": once that browser answers on the port, GFOpenMail uses it with no change;
   3. `openurl.library` (OpenURL), which most Amiga browsers register with;
-  4. none found: OpenMail says so and shows the address so it can be copied.
+  4. none found: GFOpenMail says so and shows the address so it can be copied.
 
-  A link from a message reaches the hook only if it is `http`, `https` or `mailto` with no control characters; `"`, `` ` ``, `*` and `$` in it are percent-encoded first (`oam_link_for_browser`), because the Shell acts on them inside the quotes of the `ENV:OpenMail/Browser` line. The hook itself never puts those characters on that line.
+  A link from a message reaches the hook only if it is `http`, `https` or `mailto` with no control characters; `"`, `` ` ``, `*` and `$` in it are percent-encoded first (`oam_link_for_browser`), because the Shell acts on them inside the quotes of the `ENV:GFOpenMail/Browser` line. The hook itself never puts those characters on that line.
 - **Sign-in pages** (OAuth) go through the same hook.
 
 ## 5. Milestones
@@ -267,7 +267,7 @@ note      = Google wants OAuth; an app password works for accounts with 2-step v
 | | What | Done when |
 | --- | --- | --- |
 | M1-M2 | IMAP engine; Amiga network (KyneMail, 2 Oct) | Done |
-| **M3** | The GadTools main window, read-only: worker, accounts from providers, folders, message list, reading text and HTML, the browser hook | It reads Gmail and Outlook on OS 3.2.3 over OpenSocket |
+| **M3** | The GadTools main window, read-only: worker, accounts from providers, folders, message list, reading text and HTML, the browser hook | It reads Gmail and Outlook on OS 3.2.3 over GFOpenSocket |
 | **M3b** | The Outlook-style desk (section 2): icon toolbar, folder side panel with Favourites and unread counts, the three-line list grouped by date, the reading pane with attachment chips, quick filter, moving by drag and drop, new-mail notice | The desk of the mock-up, working on OS 3.2.3 against Gmail and Outlook.com |
 | M4 | SMTP and the compose window, in the same look | Sending, replying, forwarding |
 | M5 | MIME: multipart, attachments, charsets, quoted-printable and base64 both ways | Real-world mail reads and sends correctly |
