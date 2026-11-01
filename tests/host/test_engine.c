@@ -1,6 +1,7 @@
 /* OpenMail engine tests on the host.
  *   test_engine unit                 the engine's pieces on their own
  *   test_engine imap SCENARIO PORT   a session against fake_imapd.py
+ *   test_engine imap deep PORT       LIST answers nested 64, 65, 5000 and a million lists deep
  * Exit 0 when every check passes; each failure is printed. */
 #include "oam_base64.h"
 #include "oam_imap.h"
@@ -388,6 +389,38 @@ done:
     return failures == start;
 }
 
+/* fake_imapd's deep scenario: one connection per depth, as its DEEP says. Lists
+ * nest 64 deep at most (a BODYSTRUCTURE needs well under that); a deeper answer
+ * is a protocol error, not a parser recursing down the worker's 64 KB stack. */
+static int deep_sessions(int port)
+{
+    static const struct { int depth, ok; } want[] = { { 64, 1 }, { 65, 0 }, { 5000, 0 }, { 1000000, 0 } };
+    int start = failures;
+    size_t i;
+    for (i = 0; i < sizeof want / sizeof *want; i++) {
+        oam_imap m;
+        oam_imap_folder *f = NULL;
+        int n = 0, ok;
+        oam_imap_init(&m);
+        if (!oam_imap_connect(&m, "localhost", port, OAM_IMAP_PLAIN)) {
+            CHECK(0, "connect: %s", oam_imap_error(&m));
+            oam_imap_dispose(&m);
+            break;
+        }
+        ok = oam_imap_list(&m, &f, &n);
+        if (want[i].ok) {
+            CHECK(ok && n == 1, "%d nested lists are taken: %s", want[i].depth, oam_imap_error(&m));
+            if (ok && n == 1) check_str(f[0].name, "INBOX", "the folder after the nested lists");
+        } else {
+            CHECK(!ok && n == 0, "%d nested lists are refused", want[i].depth);
+            CHECK(strstr(oam_imap_error(&m), "could not be read") != NULL, "%d deep: the error: %s", want[i].depth, oam_imap_error(&m));
+        }
+        oam_imap_free_folders(f, n);
+        oam_imap_dispose(&m);
+    }
+    return failures == start;
+}
+
 /* test_engine providers DIR: every .provider file in DIR parses. */
 #include <dirent.h>
 static void providers(const char *dir)
@@ -428,6 +461,8 @@ int main(int argc, char **argv)
         unit_account();
     } else if (argc >= 3 && !strcmp(argv[1], "providers")) {
         providers(argv[2]);
+    } else if (argc >= 4 && !strcmp(argv[1], "imap") && !strcmp(argv[2], "deep")) {
+        deep_sessions(atoi(argv[3]));
     } else if (argc >= 4 && !strcmp(argv[1], "imap")) {
         imap_session(argv[2], atoi(argv[3]));
     } else {

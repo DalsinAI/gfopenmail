@@ -9,7 +9,7 @@ import os, subprocess, sys, tempfile, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 KM = os.path.normpath(os.path.join(HERE, "..", ".."))
-SCENARIOS = ["plain", "login", "xoauth2", "xoauth2bad", "tls", "starttls"]
+SCENARIOS = ["plain", "login", "xoauth2", "xoauth2bad", "tls", "starttls", "deep"]
 
 
 def build(out):
