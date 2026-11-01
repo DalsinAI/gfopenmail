@@ -258,6 +258,8 @@ note      = Google wants OAuth; an app password works for accounts with 2-step v
   2. AmigaChrome's browser, through its ARexx port. The name is reserved as `AMIGACHROME.BROWSER`, with the commands `OPENURL url` and `OPENFILE path`. That is the hook for "our website browser later": once that browser answers on the port, OpenMail uses it with no change;
   3. `openurl.library` (OpenURL), which most Amiga browsers register with;
   4. none found: OpenMail says so and shows the address so it can be copied.
+
+  A link from a message reaches the hook only if it is `http`, `https` or `mailto` with no control characters; `"`, `` ` ``, `*` and `$` in it are percent-encoded first (`oam_link_for_browser`), because the Shell acts on them inside the quotes of the `ENV:OpenMail/Browser` line. The hook itself never puts those characters on that line.
 - **Sign-in pages** (OAuth) go through the same hook.
 
 ## 5. Milestones

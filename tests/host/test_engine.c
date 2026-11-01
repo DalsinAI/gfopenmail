@@ -162,6 +162,50 @@ static void unit_html(void)
     html_case("<table><tr><td>A</td><td>B</td></tr><tr><td>C</td></tr></table>", "A B\nC", "");
 }
 
+static void link_case(const char *link, const char *want)
+{
+    char out[64];
+    int ok = oam_link_for_browser(link, out, sizeof out);
+    if (want) {
+        CHECK(ok, "link accepted: %s", link);
+        check_str(out, want, link);
+    } else {
+        CHECK(!ok && !out[0], "link refused: %s", link);
+    }
+}
+
+static void unit_links(void)
+{
+    link_case("https://aminet.net/", "https://aminet.net/");
+    link_case("http://x.org/a?b=1&c=2#d", "http://x.org/a?b=1&c=2#d");
+    link_case("HTTPS://X.ORG/", "HTTPS://X.ORG/");
+    link_case("mailto:someone@example.org?subject=Hi there", "mailto:someone@example.org?subject=Hi there");
+    link_case("  https://x.org/  ", "https://x.org/");
+    link_case("https://x.org/caf\xc3\xa9", "https://x.org/caf\xc3\xa9");
+    /* what the Shell acts on inside the quotes of ENV:OpenMail/Browser's line */
+    link_case("https://x.org/\" +Delete SYS: ALL \"", "https://x.org/%22 +Delete SYS: ALL %22");
+    link_case("https://x.org/`Delete SYS: ALL`", "https://x.org/%60Delete SYS: ALL%60");
+    link_case("https://x.org/*\"x", "https://x.org/%2A%22x");
+    link_case("https://x.org/?k=$Workbench", "https://x.org/?k=%24Workbench");
+    /* anything but http, https and mailto, and control characters */
+    link_case("javascript:alert(1)", NULL);
+    link_case("file:///SYS:S/Startup-Sequence", NULL);
+    link_case("SYS:Utilities/Clock", NULL);
+    link_case("ftp://x.org/", NULL);
+    link_case("httpsx://x.org/", NULL);
+    link_case("", NULL);
+    link_case("https://x.org/\nDelete SYS: ALL", NULL);
+    link_case("https://x.org/\rx", NULL);
+    link_case("https://x.org/\tx", NULL);
+    link_case("https://x.org/\x7f", NULL);
+    link_case("https://x.org/\x1b[0m", NULL);
+    /* out holds 63: a link that fills it is kept; one too long, also once
+     * encoded, is refused, never cut short */
+    link_case("https://x.org/0123456789012345678901234567890123456789012345678", "https://x.org/0123456789012345678901234567890123456789012345678");
+    link_case("https://x.org/01234567890123456789012345678901234567890123456789", NULL);
+    link_case("https://x.org/01234567890123456789012345678901234567890123456\"", NULL);
+}
+
 static void view_case(const char *msg, const char *want_text, const char *want_links, int want_html, int want_att, const char *what)
 {
     oam_view v;
@@ -457,6 +501,7 @@ int main(int argc, char **argv)
         unit_text();
         unit_provider();
         unit_html();
+        unit_links();
         unit_mime();
         unit_account();
     } else if (argc >= 3 && !strcmp(argv[1], "providers")) {

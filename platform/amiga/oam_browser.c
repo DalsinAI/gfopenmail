@@ -30,12 +30,26 @@ static void absolute(const char *path, char *out, size_t size)
     if (lock) UnLock(lock);
 }
 
+/* Whether what can go inside quotes on a Shell line: '"' would end them, '*'
+ * escapes, '`' runs a command and '$' reads a variable, even inside quotes. */
+static int shell_safe(const char *what)
+{
+    for (; *what; what++)
+        if (*what == '"' || *what == '`' || *what == '*' || *what == '$' ||
+            (unsigned char)*what < 32 || *what == 127) return 0;
+    return 1;
+}
+
 /* 1. The user's own command. */
 static int by_command(const char *what, char *how, size_t howlen)
 {
     char tmpl[256], cmd[1024], *pct;
     BPTR nil;
     if (GetVar((STRPTR)"OpenMail/Browser", (STRPTR)tmpl, sizeof tmpl, GVF_GLOBAL_ONLY) <= 0) return 0;
+    if (!shell_safe(what)) {
+        snprintf(how, howlen, "Not given to ENV:OpenMail/Browser: it has characters the Shell acts on");
+        return 0;
+    }
     if ((pct = strstr(tmpl, "%s"))) {
         *pct = 0;
         snprintf(cmd, sizeof cmd, "%s\"%s\"%s", tmpl, what, pct + 2);
