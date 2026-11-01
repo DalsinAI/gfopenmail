@@ -1,8 +1,8 @@
-# OpenMail
+# GFOpenMail
 
 An email client for AmigaOS 3.2.3 and AROS 68k: IMAP and SMTP over TLS, OAuth 2 sign-in (XOAUTH2) for Gmail and Outlook.com, and a GadTools interface (AmigaOS 3.x programs are GadTools or MUI). It was called KyneMail, then OpenAmigaMail, until 4 October 2026.
 
-OpenMail is free: MIT licence (`LICENSE`, Copyright (c) 2026 AmigaChrome Team), at no cost, to use, change, fork and pass on. The notice stays with every copy; if you fork it, please say it is based on OpenMail by the AmigaChrome Team (a request, not a condition).
+GFOpenMail is free: MIT licence (`LICENSE`, Copyright (c) 2026 AmigaChrome Team), at no cost, to use, change, fork and pass on. The notice stays with every copy; if you fork it, please say it is based on GFOpenMail by the AmigaChrome Team (a request, not a condition).
 
 It is written from the standards (RFC 3501, 5321, 5322, 2045-2049, 2047, 4616, 4959) and the providers' OAuth notes. SimpleMail served as a checklist of what a mail client on the Amiga does, but none of its code is used.
 
@@ -12,8 +12,8 @@ It is written from the standards (RFC 3501, 5321, 5322, 2045-2049, 2047, 4616, 4
 | --- | --- |
 | `engine/` | Portable C: the protocols, MIME and the mail store. It builds unchanged for AmigaOS 3.x, AROS and the host |
 | `platform/posix/` | The network for the host's tests: POSIX sockets and OpenSSL |
-| `platform/amiga/` | The network on the Amiga: bsdsocket.library and OpenTLS (opentls.library); a bigger stack for main |
-| `tools/` | OpenMailCheck: signs in, lists folders and the newest subjects. The engine's first program on the Amiga |
+| `platform/amiga/` | The network on the Amiga: bsdsocket.library and GFOpenTLS (gfopentls.library); a bigger stack for main |
+| `tools/` | GFOpenMailCheck: signs in, lists folders and the newest subjects. The engine's first program on the Amiga |
 | `tests/host/` | The engine's tests on the host, with a scripted IMAP server |
 
 The engine meets the network only through `engine/oam_net.h`, so the same protocol code runs on both.
@@ -24,11 +24,11 @@ The engine meets the network only through `engine/oam_net.h`, so the same protoc
 | --- | --- |
 | 1. IMAP over TLS or STARTTLS: PLAIN, LOGIN and XOAUTH2 sign-in; folders; select; summaries; whole messages; flags | **Done, tested on x86 cores** |
 | 2. Headers for people: fields, RFC 2047 encoded words, names and addresses, dates; seven charsets to UTF-8, and UTF-8 to the Amiga's Latin-1 | **Done, tested on x86 cores** |
-| 3. The Amiga's network: bsdsocket.library and OpenTLS (AmiSSL 5 until 0.3.2), read timeouts with WaitSelect | **Done**: on AmigaOS 3.2.3 over ACNet, now OpenSocket (2 Oct 2026), OpenMailCheck reaches imap.gmail.com and outlook.office365.com: DNS, TCP, a TLS handshake with the certificate checked, and the IMAP capabilities (both offer XOAUTH2) |
+| 3. The Amiga's network: bsdsocket.library and GFOpenTLS (AmiSSL 5 until 0.3.2), read timeouts with WaitSelect | **Done**: on AmigaOS 3.2.3 over ACNet, now GFOpenSocket (2 Oct 2026), GFOpenMailCheck reaches imap.gmail.com and outlook.office365.com: DNS, TCP, a TLS handshake with the certificate checked, and the IMAP capabilities (both offer XOAUTH2) |
 | 4. The ReAction main window: folders, message list, plain-text reading | |
 | 5. SMTP and the compose window | |
 | 6. MIME: multipart, quoted-printable, base64, attachments | |
-| 7. OAuth tokens: from AmigaChrome's Cradle; device-code sign-in for providers that allow it (Microsoft); refresh on the Amiga | |
+| 7. OAuth tokens: from AmiCradle's Cradle; device-code sign-in for providers that allow it (Microsoft); refresh on the Amiga | |
 | 8. Local cache, search, filters, address book | |
 
 ## Testing on the host
@@ -51,30 +51,30 @@ The fake server checks each command it receives, and a session passes only when 
 
 `tests/lab/imapd_lab.py PORT USER PASSWORD --security tls|starttls|plain --cert C --key K` is a throwaway IMAP server on the PC's 127.0.0.1 (Python's own `ssl`): one account, an INBOX of made-up messages (the newest 256 KiB, to move some data through TLS) and a few folders, one with a Latin-1 name. A lab's Amiga reaches it through openamigatls' `tests/lab/pyhook` (`OPENTLS_LAB_PORTS`).
 
-0.3.3 on 19 October 2026 (lab copied from Instance-32: AmigaOS 3.2.3, AC090 68040, OpenSocket; opentls.library 1.2 and opencrypto.library 2.0 from openamigatls main e7c0e2d, built with OpenAmigaGCC 16.2.0-open2), with a throwaway authority in `ENVARC:OpenTLS/certs/`:
+0.3.3 on 19 October 2026 (lab copied from Instance-32: AmigaOS 3.2.3, AC090 68040, GFOpenSocket; gfopentls.library 1.2 and gfopencrypto.library 2.0 from openamigatls main e7c0e2d, built with GFOpenAmigaGCC 16.2.0-open2), with a throwaway authority in `ENVARC:GFOpenTLS/certs/`:
 
-- OpenMailCheck over IMAPS and over STARTTLS, the server's certificate from that authority: TLS 1.2 (ECDHE-RSA-AES256-GCM-SHA384), signed in, 5 folders (Grüße shown right), the newest 10 subjects with RFC 2047 words decoded and the unread ones marked;
+- GFOpenMailCheck over IMAPS and over STARTTLS, the server's certificate from that authority: TLS 1.2 (ECDHE-RSA-AES256-GCM-SHA384), signed in, 5 folders (Grüße shown right), the newest 10 subjects with RFC 2047 words decoded and the unread ones marked;
 - the probe (`-`): each step, then "Connected over TLS, its certificate checked";
 - refused, each with the reason in words: a certificate for another name, an expired one, a self-signed one; a wrong password; STARTTLS asked of a server without it;
-- OpenMail's window: the INBOX listed, and the 256 KiB message fetched over TLS and shown.
+- GFOpenMail's window: the INBOX listed, and the 256 KiB message fetched over TLS and shown.
 
 ## Building for the Amiga
 
-    ./build-os3.sh                  # build/os3: OpenMail and OpenMailCheck
+    ./build-os3.sh                  # build/os3: GFOpenMail and GFOpenMailCheck
 
-It builds `build/os3/OpenMail` and `build/os3/OpenMailCheck` with OpenAmigaGCC 16.2.0-open2 (the os32-gcc16 stove: `STOVE`, default `~/AmigaChrome/stoves/os32-gcc16`; the GCC 6.5 stove builds it too), for the 68040, soft float, with `-Wall -Werror`. TLS is OpenTLS (`third_party/opentls`: opentls.library's API headers), and nothing else: since 0.3.3 OpenMail neither uses nor needs AmiSSL. To run it, the Amiga needs a TCP/IP stack (bsdsocket.library) and OpenTLS (opentls.library with opencrypto.library, OpenUp's OpenTLS part):
+It builds `build/os3/GFOpenMail` and `build/os3/GFOpenMailCheck` with GFOpenAmigaGCC 16.2.0-open2 (the os32-gcc16 stove: `STOVE`, default `~/AmiCradle/stoves/os32-gcc16`; the GCC 6.5 stove builds it too), for the 68040, soft float, with `-Wall -Werror`. TLS is GFOpenTLS (`third_party/opentls`: gfopentls.library's API headers), and nothing else: since 0.3.3 GFOpenMail neither uses nor needs AmiSSL. To run it, the Amiga needs a TCP/IP stack (bsdsocket.library) and GFOpenTLS (gfopentls.library with gfopencrypto.library, GFOpenUp's GFOpenTLS part):
 
-    OpenMailCheck imap.gmail.com 993 tls you@gmail.com S:token XOAUTH2
+    GFOpenMailCheck imap.gmail.com 993 tls you@gmail.com S:token XOAUTH2
 
-`OpenMailCheck HOST 993 tls - FILE` only connects and shows what the server offers, with each step (opening the stack and OpenTLS, resolving, connecting, the handshake) on its own line: a check of the network without signing in.
+`GFOpenMailCheck HOST 993 tls - FILE` only connects and shows what the server offers, with each step (opening the stack and GFOpenTLS, resolving, connecting, the handshake) on its own line: a check of the network without signing in.
 
-**Stacks:** a Shell gives a command 4 KB of stack, and the engine needs more: a TLS handshake alone runs deep. OpenMail's programs swap to a 64 KB stack at start (`oam_run_with_stack`). An `oam_imap` is about 4.3 KB, so keep it on the heap.
+**Stacks:** a Shell gives a command 4 KB of stack, and the engine needs more: a TLS handshake alone runs deep. GFOpenMail's programs swap to a 64 KB stack at start (`oam_run_with_stack`). An `oam_imap` is about 4.3 KB, so keep it on the heap.
 
 ## Icons
 
-OpenMail's icons are in OS 3.2 style: OS 3.5 colour icons with a classic
+GFOpenMail's icons are in OS 3.2 style: OS 3.5 colour icons with a classic
 fallback picture.
-- **`package/icons/OpenMail.info`**, the envelope. `tools/envelope_art.py`
+- **`package/icons/GFOpenMail.info`**, the envelope. `tools/envelope_art.py`
   draws it in full colour, and `tools/make_icons.js` turns it into an icon
   with ACBuild's `amiga-icon.js`.
 - **`package/icons/Drawer.info`**, the drawer. It comes from the Boxie icon
@@ -83,4 +83,4 @@ fallback picture.
 
 ## Contributors
 
-OpenMail is created and maintained by [SacredTrees](https://github.com/SacredTrees) with The AmigaChrome Team, copyright AmigaChrome Team. Everyone whose work it includes is credited in [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
+GFOpenMail is created and maintained by [SacredTrees](https://github.com/SacredTrees) with The AmiCradle Team, copyright AmigaChrome Team. Everyone whose work it includes is credited in [`CONTRIBUTORS.md`](CONTRIBUTORS.md).

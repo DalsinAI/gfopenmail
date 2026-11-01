@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """tests/lab/imapd_lab.py: a throwaway IMAP server on 127.0.0.1 for trying
-OpenMail and OpenMailCheck on an Amiga (a lab) against a real TLS server,
+GFOpenMail and GFOpenMailCheck on an Amiga (a lab) against a real TLS server,
 with Python's own ssl module. A test tool only, never shipped.
 
     imapd_lab.py PORT USER PASSWORD [--security tls|starttls|plain]
@@ -10,7 +10,7 @@ with Python's own ssl module. A test tool only, never shipped.
 plain until STARTTLS, and LOGINDISABLED before it; plain: no TLS. One
 account, an INBOX of N made-up messages (the newest --big KiB long, to move
 some data through TLS), and a few other folders, one with a Latin-1 name.
-It answers what OpenMail's engine sends: CAPABILITY, STARTTLS,
+It answers what GFOpenMail's engine sends: CAPABILITY, STARTTLS,
 AUTHENTICATE PLAIN (with or without SASL-IR), LOGIN, LIST, SELECT,
 EXAMINE, UID FETCH (summaries and whole messages), UID STORE, NOOP, IDLE
 and LOGOUT. Each connection is served in a thread of its own, until killed.

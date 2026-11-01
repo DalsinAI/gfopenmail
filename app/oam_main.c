@@ -1,5 +1,5 @@
 /*
- * OpenMail: the desk (DESIGN.md 2), drawn in the OpenGadTools theme.
+ * GFOpenMail: the desk (DESIGN.md 2), drawn in the GFOpenGadTools theme.
  *
  *   [New mail] | [Reply][Reply all][Forward] | [Delete] ... [Get mail]   [search]
  *   folders     | Inbox                        | Subject
@@ -56,9 +56,9 @@
 
 struct Library *GadToolsBase = NULL;      /* ours, not libnix's auto-open stub */
 
-#define VERSION_TEXT "OpenMail 0.3.4 (30.10.2026)"
+#define VERSION_TEXT "GFOpenMail 0.3.4 (30.10.2026)"
 static const char version[] __attribute__((used)) = "$VER: " VERSION_TEXT;
-#define ACCOUNT_FILE "ENV:OpenMail/Account"
+#define ACCOUNT_FILE "ENV:GFOpenMail/Account"
 
 /* the commands, from the toolbars, menus and keys */
 enum { C_NEW = 1, C_REPLY, C_REPLYALL, C_FORWARD, C_DELETE, C_ARCHIVE, C_JUNK, C_MOVE, C_FLAG, C_UNREAD, C_GET,
@@ -280,7 +280,7 @@ static int folder_icon(const char *name)
 
 /* ---- the theme -------------------------------------------------------------------- */
 
-/* The look every Open app has: OpenPrefs Look's theme, mode, accent and Scale (ogt_look_load) */
+/* The look every GFOpen app has: GFOpenPrefs Look's theme, mode, accent and Scale (ogt_look_load) */
 static void load_theme(void)
 {
     if (theme.text) ogt_theme_free(&theme);
@@ -735,8 +735,8 @@ static void view_in_browser(void)
     char path[64], how[200];
     BPTR fh;
     if (!have_view || !view.has_html) return;
-    UnLock(CreateDir((STRPTR)"T:OpenMail"));
-    snprintf(path, sizeof path, "T:OpenMail/%lu.html", showing_uid);
+    UnLock(CreateDir((STRPTR)"T:GFOpenMail"));
+    snprintf(path, sizeof path, "T:GFOpenMail/%lu.html", showing_uid);
     if (!(fh = Open((STRPTR)path, MODE_NEWFILE))) { set_status("Could not write %s", path); return; }
     Write(fh, (APTR)"<meta charset=\"utf-8\">\n", 23);
     Write(fh, (APTR)oam_buf_str(&view.html), view.html.len);
@@ -802,7 +802,7 @@ static void links_window(void)
                     char how[200], url[600];
                     const char *u = strchr(t[code], ' ');
                     if (!oam_link_for_browser(u ? u + 1 : t[code], url, sizeof url)) {
-                        set_status("Not opened: OpenMail opens http, https and mailto links only");
+                        set_status("Not opened: GFOpenMail opens http, https and mailto links only");
                     } else {
                         oam_browser_open(url, how, sizeof how);
                         set_status("%s", how);
@@ -983,9 +983,9 @@ static void relayout(void)
 }
 
 /* The part of the screen a full-size window may have: below the title bar,
- * less the strip OpenDock takes along an edge (OpenFiles' free_area(), copied
- * here). OpenDock's window is the one whose screen title starts "OpenDock";
- * an ENV:OpenDock/Free of "left top width height" wins when the dock
+ * less the strip GFOpenDock takes along an edge (GFOpenFiles' free_area(), copied
+ * here). GFOpenDock's window is the one whose screen title starts "GFOpenDock";
+ * an ENV:GFOpenDock/Free of "left top width height" wins when the dock
  * publishes one. Without a dock it is the screen less its title bar. */
 static void free_area(int *l, int *t, int *w, int *h)
 {
@@ -994,7 +994,7 @@ static void free_area(int *l, int *t, int *w, int *h)
     ULONG lock;
     LONG got;
     int top = scr->BarHeight + 1, bottom = scr->Height, left = 0, right = scr->Width, a, b, c, d;
-    got = GetVar((STRPTR)"OpenDock/Free", (STRPTR)buf, sizeof buf, GVF_GLOBAL_ONLY);
+    got = GetVar((STRPTR)"GFOpenDock/Free", (STRPTR)buf, sizeof buf, GVF_GLOBAL_ONLY);
     if (got > 0 && sscanf(buf, "%d %d %d %d", &a, &b, &c, &d) == 4 && c >= 400 && d >= 200 && a >= 0 && b >= 0 &&
         a + c <= scr->Width && b + d <= scr->Height) {
         *l = a;
@@ -1005,7 +1005,7 @@ static void free_area(int *l, int *t, int *w, int *h)
     }
     lock = LockIBase(0);
     for (dw = scr->FirstWindow; dw; dw = dw->NextWindow) {
-        if (!dw->ScreenTitle || strncmp((const char *)dw->ScreenTitle, "OpenDock", 8) != 0)
+        if (!dw->ScreenTitle || strncmp((const char *)dw->ScreenTitle, "GFOpenDock", 10) != 0)
             continue;
         if (dw->Width >= dw->Height) {              /* along the top or the bottom */
             if (dw->TopEdge + dw->Height / 2 > scr->Height / 2) {
@@ -1034,10 +1034,10 @@ static void free_area(int *l, int *t, int *w, int *h)
     *h = bottom - top;
 }
 
-/* The first size (the user, 10 October 2026, as in OpenFiles 0.2.3): 800 x
+/* The first size (the user, 10 October 2026, as in GFOpenFiles 0.2.3): 800 x
  * 600, centred in the free area, and never bigger than it, so on a screen
  * smaller than 800 x 600 it is the free area itself. A size the user gives
- * the window is kept and given back by OpenWindows. */
+ * the window is kept and given back by GFOpenWindows. */
 #define START_W 800
 #define START_H 600
 static void start_box(int *l, int *t, int *w, int *h)
@@ -1056,14 +1056,14 @@ static BOOL open_window(void)
     if (!(scr = LockPubScreen(NULL))) return FALSE;
     if (!(vi = GetVisualInfo(scr, TAG_DONE))) return FALSE;
     load_theme();
-    /* the theme's font at its size, grown with Look's Scale, as the other Open apps */
+    /* the theme's font at its size, grown with Look's Scale, as the other GFOpen apps */
     if (!(font = ogt_open_font(&theme, scr, &font_attr))) return FALSE;
     fh = font->tf_YSize;
     ogt_ctx_init(&ctx, scr, &theme, theme_mode);
     if ((menu = CreateMenus(menus, TAG_DONE))) LayoutMenus(menu, vi, GTMN_NewLookMenus, TRUE, TAG_DONE);
     start_box(&l, &t, &w, &h);     /* 800 x 600 in the free area, or the free area when smaller */
     mh = (fh + 6) * 18;
-    win = OpenWindowTags(NULL, WA_Title, (ULONG)"OpenMail", WA_ScreenTitle, (ULONG)VERSION_TEXT,
+    win = OpenWindowTags(NULL, WA_Title, (ULONG)"GFOpenMail", WA_ScreenTitle, (ULONG)VERSION_TEXT,
                          WA_PubScreen, (ULONG)scr, WA_Width, w, WA_Height, h,
                          WA_Left, l, WA_Top, t,
                          WA_MinWidth, w < 560 ? w : 560, WA_MinHeight, h < mh ? h : mh, WA_MaxWidth, ~0, WA_MaxHeight, ~0,
@@ -1099,8 +1099,8 @@ static void close_window(void)
 
 static void about(void)
 {
-    struct EasyStruct es = { sizeof(struct EasyStruct), 0, (UBYTE *)"OpenMail",
-        (UBYTE *)VERSION_TEXT "\n\nMail for the Amiga, drawn with OpenGadTools.\nMIT licence, Copyright (c) 2026 AmigaChrome Team.", (UBYTE *)"OK" };
+    struct EasyStruct es = { sizeof(struct EasyStruct), 0, (UBYTE *)"GFOpenMail",
+        (UBYTE *)VERSION_TEXT "\n\nMail for the Amiga, drawn with GFOpenGadTools.\nMIT licence, Copyright (c) 2026 AmigaChrome Team.", (UBYTE *)"OK" };
     EasyRequestArgs(win, &es, NULL, NULL);
 }
 
@@ -1294,12 +1294,12 @@ static int mail_main(int argc, char **argv)
     (void)argc;
     (void)argv;
     if (!(GadToolsBase = OpenLibrary((STRPTR)"gadtools.library", 39))) {
-        PutStr((STRPTR)"OpenMail needs AmigaOS 3.0 or later (gadtools.library 39)\n");
+        PutStr((STRPTR)"GFOpenMail needs AmigaOS 3.0 or later (gadtools.library 39)\n");
         return 20;
     }
     if (!(replies = CreateMsgPort())) { CloseLibrary(GadToolsBase); return 20; }
     if (!open_window()) {
-        PutStr((STRPTR)"OpenMail: the window could not open\n");
+        PutStr((STRPTR)"GFOpenMail: the window could not open\n");
         close_window();
         DeleteMsgPort(replies);
         CloseLibrary(GadToolsBase);

@@ -1,4 +1,4 @@
-/* OpenMail's account window. MIT, Copyright (c) 2026 AmigaChrome Team. */
+/* GFOpenMail's account window. MIT, Copyright (c) 2026 AmigaChrome Team. */
 #ifndef OAM_ACCOUNTWIN_H
 #define OAM_ACCOUNTWIN_H
 
@@ -7,7 +7,7 @@
 #include "oam_account.h"
 
 /* Opens the account window on scr; 1 when the user saved (a is filled and
- * ENV:/ENVARC:OpenMail/Account are written), 0 when cancelled. a's current
+ * ENV:/ENVARC:GFOpenMail/Account are written), 0 when cancelled. a's current
  * values fill the window first. */
 int oam_account_window(struct Screen *scr, APTR vi, struct TextAttr *ta, oam_account *a);
 

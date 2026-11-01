@@ -1,19 +1,19 @@
 Short:        Mail for AmigaOS 3: IMAP, TLS, OAuth
 Uploader:     (We fill this in at upload time)
-Author:       AmigaChrome Team
+Author:       AmiCradle Team
 Type:         comm/mail
 Version:      0.3.3
-Requires:     AmigaOS 3.0+, a 68040, a TCP/IP stack, OpenTLS (opentls.library)
+Requires:     AmigaOS 3.0+, a 68040, a TCP/IP stack, GFOpenTLS (gfopentls.library)
 Architecture: m68k-amigaos >= 3.0
 Distribution: Aminet
 
-OpenMail is a free mail client for AmigaOS 3.x, written from the
+GFOpenMail is a free mail client for AmigaOS 3.x, written from the
 standards (RFC 3501, 5321, 5322, MIME) with a GadTools interface.
 
 What it does today
 ------------------
 - Reads mail over IMAP, with TLS or STARTTLS and the certificate checked
-  (OpenTLS: opentls.library, OpenUp's OpenTLS part).
+  (GFOpenTLS: gfopentls.library, GFOpenUp's GFOpenTLS part).
 - Signs in with a password or an OAuth token (XOAUTH2).
 - Shows folders, the newest messages (unread and flagged marked), and
   each message as text: multipart mail, quoted-printable and base64,
@@ -21,8 +21,8 @@ What it does today
   numbered. Nothing is fetched to show a message, so there are no
   tracking pixels.
 - "View in browser" opens a message's HTML in your web browser, and
-  "Links..." opens any of its links: through ENV:OpenMail/Browser (a
-  command with %s), AmigaChrome's browser, or OpenURL. Only http, https
+  "Links..." opens any of its links: through ENV:GFOpenMail/Browser (a
+  command with %s), AmiCradle's browser, or OpenURL. Only http, https
   and mailto links are opened.
 - Talks to the servers from a process of its own, so the window never
   freezes while mail comes in.
@@ -34,33 +34,33 @@ Providers and sign-in methods are plugins
 A mail service is a small text file in Providers/ (Gmail, Outlook.com,
 Yahoo, iCloud and Fastmail are included); anyone can add one. Sign-in
 methods are Amiga libraries behind one interface, so new ones can be
-added without changing OpenMail.
+added without changing GFOpenMail.
 
 Installing
 ----------
-Copy the OpenMail drawer anywhere. Until the account window arrives,
-the account is a text file, ENV:OpenMail/Account (see README.md).
+Copy the GFOpenMail drawer anywhere. Until the account window arrives,
+the account is a text file, ENV:GFOpenMail/Account (see README.md).
 
 Licence
 -------
 MIT. Copyright (c) 2026 AmigaChrome Team. Use it, change it, fork it and
 pass it on, free; the copyright and licence notice stays with every
-copy. If you fork it, please say it is based on OpenMail by the AmigaChrome
+copy. If you fork it, please say it is based on GFOpenMail by the AmiCradle
 Team (a request, not a condition).
 
 Source: https://github.com/DalsinAI/openamigamail
 
-New in 0.3.3 (19 October 2026): OpenTLS only. AmiSSL is no longer used or
-needed, and OpenMail is built with OpenAmigaGCC 16.2.0-open2. An error
-from OpenTLS ends with one full stop, not two.
+New in 0.3.3 (19 October 2026): GFOpenTLS only. AmiSSL is no longer used or
+needed, and GFOpenMail is built with GFOpenAmigaGCC 16.2.0-open2. An error
+from GFOpenTLS ends with one full stop, not two.
 
-New in 0.3.2 (10 October 2026): secure connections through OpenTLS
-(opentls.library), the Open family's own TLS, so mail works without AmiSSL;
-AmiSSL 5 is used only when OpenTLS isn't installed and OpenMail was built
+New in 0.3.2 (10 October 2026): secure connections through GFOpenTLS
+(gfopentls.library), the GFOpen family's own TLS, so mail works without AmiSSL;
+AmiSSL 5 is used only when GFOpenTLS isn't installed and GFOpenMail was built
 with it.
 
 New in 0.3.1 (10 October 2026): the window first opens at 800 x 600, in
-the middle of the space beside OpenDock (or all of that space on a smaller
-screen), and the toolbar starts with icons only, as in every Open app. A
+the middle of the space beside GFOpenDock (or all of that space on a smaller
+screen), and the toolbar starts with icons only, as in every GFOpen app. A
 size you give the window is kept. Settings > Toolbar still chooses icons
 and text, or text only.

@@ -1,5 +1,5 @@
 /* oam_account: one mail account, as the settings file keeps it
- * (ENVARC:OpenMail/Account on the Amiga), one "key = value" per line:
+ * (ENVARC:GFOpenMail/Account on the Amiga), one "key = value" per line:
  *
  *     name     = Kim Example
  *     address  = kim@example.com

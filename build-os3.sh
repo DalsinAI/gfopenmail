@@ -1,29 +1,29 @@
 #!/bin/sh
-# OpenMail's OS 3.x programs with the os32-gcc16 stove (OpenAmigaGCC
-# 16.2.0-open2, libnix, OpenNDK). TLS is OpenTLS (opentls.library, its
+# GFOpenMail's OS 3.x programs with the os32-gcc16 stove (GFOpenAmigaGCC
+# 16.2.0-open2, libnix, GFOpenNDK). TLS is GFOpenTLS (gfopentls.library, its
 # headers in third_party/opentls), and nothing else: no AmiSSL SDK is needed
 # or used. Built for the 68040, soft float (no FPU code).
 #   build-os3.sh [OUT_DIR]       (default build/os3)
 #
-#   OGT     the opengadtools checkout (default ../opengadtools): OpenMail is
-#           drawn with its lib/, as the other Open apps are
-#   STOVE   the stove (default ~/AmigaChrome/stoves/os32-gcc16; OS32_GCC16 comes
+#   OGT     the opengadtools checkout (default ../opengadtools): GFOpenMail is
+#           drawn with its lib/, as the other GFOpen apps are
+#   STOVE   the stove (default ~/AmiCradle/stoves/os32-gcc16; OS32_GCC16 comes
 #           first). It stops when given a GCC older than 16: the os32 stove's
 #           GCC 6.5 is retired (its peephole2 clears a word and the long after
 #           it with one clr.l)
 #
 # Before 0.3.3 the first argument was the AmiSSL 5 SDK's include folder (or
 # "-" for none). Such a first argument, followed by OUT_DIR, is still taken
-# and skipped, so older callers (OpenUp's build_pack.py) build OpenMail as
+# and skipped, so older callers (GFOpenUp's build_pack.py) build GFOpenMail as
 # it is now rather than into the SDK's folder.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd)
-STOVE=${OS32_GCC16:-${STOVE:-$HOME/AmigaChrome/stoves/os32-gcc16}}
+STOVE=${OS32_GCC16:-${STOVE:-$HOME/AmiCradle/stoves/os32-gcc16}}
 CC="$STOVE/prefix/bin/m68k-amigaos-gcc"
 GCCV=$("$CC" -dumpversion 2>/dev/null || echo 0)
-[ "${GCCV%%.*}" -ge 16 ] 2>/dev/null || { echo "$CC is GCC $GCCV: OpenMail needs GCC 16 (the os32-gcc16 stove; set OS32_GCC16)"; exit 2; }
+[ "${GCCV%%.*}" -ge 16 ] 2>/dev/null || { echo "$CC is GCC $GCCV: GFOpenMail needs GCC 16 (the os32-gcc16 stove; set OS32_GCC16)"; exit 2; }
 if [ $# -ge 1 ] && { [ "$1" = "-" ] || [ -f "$1/proto/amissl.h" ]; }; then
-    [ "$1" = "-" ] || echo "build-os3.sh: OpenMail is OpenTLS only now; $1 (an AmiSSL SDK) is not used"
+    [ "$1" = "-" ] || echo "build-os3.sh: GFOpenMail is GFOpenTLS only now; $1 (an AmiSSL SDK) is not used"
     shift
 fi
 OUT=${1:-$HERE/build/os3}
@@ -37,12 +37,12 @@ SOFT="-specs=$HERE/specs/m68k-soft-m68040.specs"
 COMMON="-noixemul -m68040 $SOFT -std=gnu99 -Wall -Werror -O2 -fno-delete-null-pointer-checks"
 # shellcheck disable=SC2086
 "$CC" $COMMON -I"$HERE/engine" -I"$HERE/platform/amiga" $TLS \
-    "$HERE"/engine/*.c "$HERE"/platform/amiga/*.c "$HERE/tools/openmailcheck.c" -o "$OUT/OpenMailCheck"
-echo "$OUT/OpenMailCheck ($(wc -c < "$OUT/OpenMailCheck") bytes)"
-# OpenMail itself: the desk (app/), drawn with OpenGadTools ($OGT/lib, its look and font), on the same engine.
+    "$HERE"/engine/*.c "$HERE"/platform/amiga/*.c "$HERE/tools/openmailcheck.c" -o "$OUT/GFOpenMailCheck"
+echo "$OUT/GFOpenMailCheck ($(wc -c < "$OUT/GFOpenMailCheck") bytes)"
+# GFOpenMail itself: the desk (app/), drawn with GFOpenGadTools ($OGT/lib, its look and font), on the same engine.
 # shellcheck disable=SC2086
 "$CC" $COMMON -Wno-pointer-sign -fno-common -I"$HERE/engine" -I"$HERE/platform/amiga" -I"$HERE/app" -I"$OGT/lib" $TLS \
     "$HERE"/engine/*.c "$HERE"/platform/amiga/*.c "$HERE"/app/*.c \
     "$OGT/lib/ogt_theme.c" "$OGT/lib/ogt_draw.c" "$OGT/lib/ogt_icons.c" "$OGT/lib/ogt_list.c" \
-    "$OGT/lib/ogt_toolbar.c" "$OGT/lib/ogt_font.c" "$OGT/lib/ogt_look.c" -lamiga -o "$OUT/OpenMail"
-echo "$OUT/OpenMail ($(wc -c < "$OUT/OpenMail") bytes)"
+    "$OGT/lib/ogt_toolbar.c" "$OGT/lib/ogt_font.c" "$OGT/lib/ogt_look.c" -lamiga -o "$OUT/GFOpenMail"
+echo "$OUT/GFOpenMail ($(wc -c < "$OUT/GFOpenMail") bytes)"

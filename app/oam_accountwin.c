@@ -1,8 +1,8 @@
 /*
- * OpenMail's account window (M4's first part): the user's name, address and
+ * GFOpenMail's account window (M4's first part): the user's name, address and
  * password; the provider comes from the address (PROGDIR:Providers), so
- * nobody types a server name. Saved to ENVARC:OpenMail/Account and
- * ENV:OpenMail/Account, the password obscured (not encrypted: the Amiga has
+ * nobody types a server name. Saved to ENVARC:GFOpenMail/Account and
+ * ENV:GFOpenMail/Account, the password obscured (not encrypted: the Amiga has
  * no key store, and the window says so). The password gadget shows '*': an
  * edit hook keeps the real characters, appends at the end only, and treats
  * any other edit as starting again.
@@ -124,10 +124,10 @@ static int save(const oam_account *a)
     int ok;
     oam_buf_init(&b);
     if (!oam_account_format(a, &b)) { oam_buf_free(&b); return 0; }
-    make_dir("ENVARC:OpenMail");
-    make_dir("ENV:OpenMail");
-    ok = write_file("ENVARC:OpenMail/Account", oam_buf_str(&b));
-    ok = write_file("ENV:OpenMail/Account", oam_buf_str(&b)) && ok;
+    make_dir("ENVARC:GFOpenMail");
+    make_dir("ENV:GFOpenMail");
+    ok = write_file("ENVARC:GFOpenMail/Account", oam_buf_str(&b));
+    ok = write_file("ENV:GFOpenMail/Account", oam_buf_str(&b)) && ok;
     memset(b.data ? b.data : (char *)"", 0, b.len);
     oam_buf_free(&b);
     return ok;
@@ -139,17 +139,17 @@ static int describe(const char *address, oam_provider *p, int *found, char *line
     *found = strchr(address, '@') && find_provider(address, p);
     line2[0] = 0;
     if (!strchr(address, '@')) {
-        snprintf(line1, size, "Type your mail address, and OpenMail finds its servers.");
+        snprintf(line1, size, "Type your mail address, and GFOpenMail finds its servers.");
         return 0;
     }
     if (!*found) {
-        snprintf(line1, size, "OpenMail doesn't know this provider yet.");
+        snprintf(line1, size, "GFOpenMail doesn't know this provider yet.");
         snprintf(line2, size, "Gmail, Yahoo, iCloud and Fastmail work today.");
         return 0;
     }
     if (!oam_provider_has_auth(p, "password")) {
         snprintf(line1, size, "%s needs Microsoft's own sign-in (OAuth), not a password.", p->name);
-        snprintf(line2, size, "That comes once OpenMail is registered. Gmail works today.");
+        snprintf(line2, size, "That comes once GFOpenMail is registered. Gmail works today.");
         return 0;
     }
     if (!strcmp(p->name, "Gmail")) {
@@ -185,9 +185,9 @@ int oam_account_window(struct Screen *scr, APTR vi, struct TextAttr *ta, oam_acc
     {
         static const char *longest[] = {
             "Outlook.com needs Microsoft's own sign-in (OAuth), not a password.",
-            "That comes once OpenMail is registered. Gmail works today.",
+            "That comes once GFOpenMail is registered. Gmail works today.",
             "Some providers want an app password, not your usual one.",
-            "Type your mail address, and OpenMail finds its servers." };
+            "Type your mail address, and GFOpenMail finds its servers." };
         struct RastPort rp;
         InitRastPort(&rp);
         SetFont(&rp, font);
@@ -232,7 +232,7 @@ int oam_account_window(struct Screen *scr, APTR vi, struct TextAttr *ta, oam_acc
     gad[G_CANCEL] = g = CreateGadget(BUTTON_KIND, g, &ng, GT_Underscore, '_', TAG_DONE);
     y += fh + 6 + 8;
 
-    if (g) w = OpenWindowTags(NULL, WA_Title, (ULONG)"OpenMail: your account", WA_PubScreen, (ULONG)scr,
+    if (g) w = OpenWindowTags(NULL, WA_Title, (ULONG)"GFOpenMail: your account", WA_PubScreen, (ULONG)scr,
                               WA_InnerWidth, ww + 16, WA_InnerHeight, y - scr->WBorTop - scr->Font->ta_YSize - 1,
                               WA_Left, (scr->Width - ww - 16) / 2, WA_Top, scr->Height / 4,
                               WA_DragBar, TRUE, WA_DepthGadget, TRUE, WA_CloseGadget, TRUE, WA_Activate, TRUE,
@@ -273,7 +273,7 @@ int oam_account_window(struct Screen *scr, APTR vi, struct TextAttr *ta, oam_acc
                     snprintf(n.auth, sizeof n.auth, "password");
                     snprintf(n.secret, sizeof n.secret, "%s", pw);
                     if (save(&n)) { *a = n; result = 1; done = 1; }
-                    else GT_SetGadgetAttrs(gad[G_NOTE1], w, NULL, GTTX_Text, (ULONG)"The account could not be saved to ENVARC:OpenMail.", TAG_DONE);
+                    else GT_SetGadgetAttrs(gad[G_NOTE1], w, NULL, GTTX_Text, (ULONG)"The account could not be saved to ENVARC:GFOpenMail.", TAG_DONE);
                     memset(&n, 0, sizeof n);
                 } else if (id == G_SAVE) {
                     GT_SetGadgetAttrs(gad[G_NOTE1], w, NULL, GTTX_Text, (ULONG)"Type your password first.", TAG_DONE);

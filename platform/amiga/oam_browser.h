@@ -1,12 +1,12 @@
 /* oam_browser: opens a web address or a file in a browser (DESIGN.md 4).
  *
  * Tried in this order:
- *   1. ENV:OpenMail/Browser: a command, %s standing for the address (put
+ *   1. ENV:GFOpenMail/Browser: a command, %s standing for the address (put
  *      in quotes; one with '"', '`', '*', '$' or control characters is not
  *      put on the line);
- *   2. AmigaChrome's browser, on ARexx port AMIGACHROME.BROWSER, with
+ *   2. AmiCradle's browser, on ARexx port AMICRADLE.BROWSER, with
  *      OPENURL address or OPENFILE path (reserved for that browser: once it
- *      answers there, OpenMail uses it with no change);
+ *      answers there, GFOpenMail uses it with no change);
  *   3. openurl.library (OpenURL), which most Amiga browsers register with.
  * Sign-in pages (OAuth) and "View in browser" both come through here. */
 #ifndef OAM_BROWSER_H
@@ -14,7 +14,7 @@
 
 #include <stddef.h>
 
-#define OAM_BROWSER_PORT "AMIGACHROME.BROWSER"
+#define OAM_BROWSER_PORT "AMICRADLE.BROWSER"
 
 /* what: a URL ("https://...", "mailto:...") or an AmigaDOS path to a file.
  * A link from a message goes through oam_link_for_browser first.

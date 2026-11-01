@@ -45,9 +45,9 @@ static int by_command(const char *what, char *how, size_t howlen)
 {
     char tmpl[256], cmd[1024], *pct;
     BPTR nil;
-    if (GetVar((STRPTR)"OpenMail/Browser", (STRPTR)tmpl, sizeof tmpl, GVF_GLOBAL_ONLY) <= 0) return 0;
+    if (GetVar((STRPTR)"GFOpenMail/Browser", (STRPTR)tmpl, sizeof tmpl, GVF_GLOBAL_ONLY) <= 0) return 0;
     if (!shell_safe(what)) {
-        snprintf(how, howlen, "Not given to ENV:OpenMail/Browser: it has characters the Shell acts on");
+        snprintf(how, howlen, "Not given to ENV:GFOpenMail/Browser: it has characters the Shell acts on");
         return 0;
     }
     if ((pct = strstr(tmpl, "%s"))) {
@@ -59,14 +59,14 @@ static int by_command(const char *what, char *how, size_t howlen)
     nil = Open((STRPTR)"NIL:", MODE_NEWFILE);
     if (SystemTags((STRPTR)cmd, SYS_Asynch, TRUE, SYS_Input, (ULONG)nil, SYS_Output, 0, TAG_DONE) == -1) {
         if (nil) Close(nil);
-        snprintf(how, howlen, "ENV:OpenMail/Browser did not start: %s", tmpl);
+        snprintf(how, howlen, "ENV:GFOpenMail/Browser did not start: %s", tmpl);
         return 0;
     }
     snprintf(how, howlen, "opened with your browser command");
     return 1;
 }
 
-/* 2. AmigaChrome's browser, by ARexx, waiting up to 5 s for its answer. */
+/* 2. AmiCradle's browser, by ARexx, waiting up to 5 s for its answer. */
 static int by_arexx(const char *what, char *how, size_t howlen)
 {
     struct MsgPort *reply = NULL, *tport = NULL, *port;
@@ -120,9 +120,9 @@ static int by_arexx(const char *what, char *how, size_t howlen)
     if (reply && sent != 2) DeleteMsgPort(reply);
     CloseLibrary((struct Library *)RexxSysBase);
     RexxSysBase = NULL;
-    if (ok) snprintf(how, howlen, "opened in AmigaChrome's browser");
-    else if (sent == 2) snprintf(how, howlen, "AmigaChrome's browser did not answer");
-    else if (sent) snprintf(how, howlen, "AmigaChrome's browser could not open it");
+    if (ok) snprintf(how, howlen, "opened in AmiCradle's browser");
+    else if (sent == 2) snprintf(how, howlen, "AmiCradle's browser did not answer");
+    else if (sent) snprintf(how, howlen, "AmiCradle's browser could not open it");
     return ok;
 }
 
@@ -158,6 +158,6 @@ int oam_browser_open(const char *what, char *how, size_t howlen)
     if (howlen) how[0] = 0;
     if (by_command(what, how, howlen) || by_arexx(what, how, howlen) || by_openurl(what, how, howlen)) return 1;
     if (!how[0])
-        snprintf(how, howlen, "No browser found: install one with OpenURL, or set ENV:OpenMail/Browser");
+        snprintf(how, howlen, "No browser found: install one with OpenURL, or set ENV:GFOpenMail/Browser");
     return 0;
 }
