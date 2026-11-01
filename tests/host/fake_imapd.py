@@ -14,6 +14,8 @@ Scenarios:
   xoauth2bad  XOAUTH2 refused: the error challenge, then NO
   tls         implicit TLS (CERT and KEY)
   starttls    STARTTLS, then the session
+  deep        plain TCP, one client per entry of DEEP: each sends LIST and gets
+              a LIST answer nested that many lists deep (the parser's limit)
 """
 import base64, socket, ssl, sys
 
@@ -25,6 +27,19 @@ HEADERS = [
     (b"Date: Thu, 02 Oct 2026 21:05:00 +0100\r\nFrom: Thufir <thufir@example.com>\r\n"
      b"Subject: (parens) and \"quotes\"\r\nMessage-ID: <2@example.com>\r\n\r\n"),
 ]
+# a real BODYSTRUCTURE: mixed (alternative (plain, html), a forwarded message (mixed (plain, png)))
+BODYSTRUCTURE = (
+    '((("TEXT" "PLAIN" ("CHARSET" "UTF-8") NIL NIL "QUOTED-PRINTABLE" 120 4 NIL NIL NIL NIL)'
+    '("TEXT" "HTML" ("CHARSET" "UTF-8") NIL NIL "QUOTED-PRINTABLE" 420 9 NIL NIL NIL NIL) "ALTERNATIVE" ("BOUNDARY" "b1") NIL NIL NIL)'
+    '("MESSAGE" "RFC822" NIL NIL NIL "7BIT" 900 ("Thu, 02 Oct 2026 20:00:00 +0100" "fwd" (("Thufir" NIL "thufir" "example.com")) '
+    '(("Thufir" NIL "thufir" "example.com")) (("Thufir" NIL "thufir" "example.com")) ((NIL NIL "kim" "example.com")) NIL NIL NIL "<0@example.com>") '
+    '(("TEXT" "PLAIN" ("CHARSET" "US-ASCII") NIL NIL "7BIT" 30 1 NIL NIL NIL NIL)'
+    '("IMAGE" "PNG" ("NAME" "a.png") NIL NIL "BASE64" 400 NIL ("ATTACHMENT" ("FILENAME" "a.png")) NIL NIL) "MIXED" ("BOUNDARY" "b3") NIL NIL NIL) '
+    '20 NIL NIL NIL NIL) "MIXED" ("BOUNDARY" "b0") NIL NIL NIL)')
+
+# deep: (depth, balanced) per connection; the engine takes 64 nested lists and no more
+DEEP = [(64, True), (65, True), (5000, False), (1000000, False)]
+
 BODY = (b"From: Thufir <thufir@example.com>\r\nSubject: hello\r\n\r\nLine one\r\nLine two with {braces} and ) a paren\r\n")
 
 
@@ -59,7 +74,7 @@ class Session:
 
     def caps(self):
         c = "IMAP4rev1 LITERAL+ IDLE"
-        if self.scenario == "plain":
+        if self.scenario in ("plain", "deep"):
             c += " SASL-IR AUTH=PLAIN"
         elif self.scenario in ("xoauth2", "xoauth2bad"):
             c += " AUTH=XOAUTH2 AUTH=PLAIN"
@@ -69,8 +84,13 @@ class Session:
             c += " SASL-IR AUTH=PLAIN AUTH=XOAUTH2"
         return c
 
-    def run(self):
+    def run(self, depth=0, balanced=True):
         self.send(f"* OK [CAPABILITY {self.caps()}] fake_imapd ready\r\n")
+        if self.scenario == "deep":
+            tag, _ = self.expect('LIST "" "*"')
+            nest = "(" * depth + (")" * depth if balanced else "")
+            self.send(f'* LIST {nest} "/" INBOX\r\n{tag} OK LIST done\r\n')
+            return
         if self.scenario == "starttls":
             tag, _ = self.expect("STARTTLS")
             self.send(f"{tag} OK Begin TLS negotiation now\r\n")
@@ -135,7 +155,7 @@ class Session:
         tag, rest = self.expect("UID FETCH 1:* (UID FLAGS RFC822.SIZE INTERNALDATE BODY.PEEK[HEADER.FIELDS")
         out = ""
         for i, (uid, flags, h) in enumerate([(41, "\\Seen", HEADERS[0]), (42, "", HEADERS[1])], 1):
-            out += (f'* {i} FETCH (UID {uid} FLAGS ({flags}) RFC822.SIZE {1000 + i} INTERNALDATE "02-Oct-2026 21:0{i}:00 +0100" '
+            out += (f'* {i} FETCH (UID {uid} FLAGS ({flags}) BODYSTRUCTURE {BODYSTRUCTURE} RFC822.SIZE {1000 + i} INTERNALDATE "02-Oct-2026 21:0{i}:00 +0100" '
                     f"BODY[HEADER.FIELDS (DATE FROM TO CC REPLY-TO SUBJECT MESSAGE-ID IN-REPLY-TO REFERENCES CONTENT-TYPE)] {{{len(h)}}}\r\n")
             self.send(out.encode() + h + b")\r\n")
             out = ""
@@ -159,18 +179,19 @@ def main():
     srv.settimeout(20)
     with open(portfile, "w") as f:
         f.write(str(srv.getsockname()[1]))
-    conn, _ = srv.accept()
-    conn.settimeout(20)
-    if scenario == "tls":
-        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        ctx.load_cert_chain(cert, key)
-        conn = ctx.wrap_socket(conn, server_side=True)
-    try:
-        Session(conn, scenario, cert, key).run()
-    except (Fail, OSError, ssl.SSLError) as e:
-        print(f"fake_imapd {scenario}: {e}", file=sys.stderr)
-        sys.exit(1)
-    conn.close()
+    for depth, balanced in DEEP if scenario == "deep" else [(0, True)]:
+        conn, _ = srv.accept()
+        conn.settimeout(20)
+        if scenario == "tls":
+            ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            ctx.load_cert_chain(cert, key)
+            conn = ctx.wrap_socket(conn, server_side=True)
+        try:
+            Session(conn, scenario, cert, key).run(depth, balanced)
+        except (Fail, OSError, ssl.SSLError) as e:
+            print(f"fake_imapd {scenario}: {e}", file=sys.stderr)
+            sys.exit(1)
+        conn.close()
 
 
 if __name__ == "__main__":

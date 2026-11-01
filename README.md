@@ -37,12 +37,13 @@ The engine meets the network only through `engine/oam_net.h`, so the same protoc
 
 This builds the engine with AddressSanitizer and UBSan, makes a throwaway CA and a certificate for localhost, and runs:
 - the unit tests: base64, SASL, modified UTF-7;
-- six sessions against `fake_imapd.py`:
+- seven sessions against `fake_imapd.py`:
   - **plain:** AUTH=PLAIN with SASL-IR;
   - **login:** LOGIN, with a password holding `"` and `\`;
   - **xoauth2:** the continuation path;
   - **xoauth2bad:** a refused token, with the server's reason passed on;
-  - **tls** and **starttls.**
+  - **tls** and **starttls;**
+  - **deep:** LIST answers nested 64 lists deep (taken), 65, 5000 and a million (refused as protocol errors, not a stack overflow).
 
 The fake server checks each command it receives, and a session passes only when both sides agree.
 

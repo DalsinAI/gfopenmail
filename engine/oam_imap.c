@@ -11,6 +11,7 @@
 
 #define MAX_RESPONSE (64ul * 1024 * 1024)   /* one response, literals included */
 #define MAX_LINE (1024ul * 1024)
+#define MAX_NESTING 64   /* lists in lists: a BODYSTRUCTURE takes well under this; parse_items recurses per level */
 
 /* ---- a parsed response ---------------------------------------------------- */
 
@@ -38,6 +39,8 @@ typedef struct resp {
     item *items;           /* a data response's values after its name */
 } resp;
 
+/* recurses once per nested list: no deeper than parse_items builds (MAX_NESTING),
+ * and a parse that fails part way leaves every item it made linked in */
 static void free_items(item *it)
 {
     while (it) {
@@ -75,8 +78,10 @@ static item *new_item(int kind, const char *s, size_t len)
     return it;
 }
 
-/* values from *pp up to the end, or to the ')' closing the list being read */
-static item *parse_items(const char **pp, const char *end, int in_list, int *bad)
+/* values from *pp up to the end, or to the ')' closing the list being read;
+ * depth is how many lists that is inside (0 for a response's values), and a list
+ * deeper than MAX_NESTING is bad: this recurses on the network process's stack */
+static item *parse_items(const char **pp, const char *end, int depth, int *bad)
 {
     item *first = NULL, **link = &first;
     const char *p = *pp;
@@ -84,12 +89,13 @@ static item *parse_items(const char **pp, const char *end, int in_list, int *bad
         item *it = NULL;
         while (p < end && *p == ' ') p++;
         if (p >= end) break;
-        if (*p == ')') { if (in_list) break; *bad = 1; break; }
+        if (*p == ')') { if (depth) break; *bad = 1; break; }
         if (*p == '(') {
+            if (depth >= MAX_NESTING) { *bad = 1; break; }
             p++;
             it = new_item(IT_LIST, NULL, 0);
             if (!it) { *bad = 1; break; }
-            it->child = parse_items(&p, end, 1, bad);
+            it->child = parse_items(&p, end, depth + 1, bad);
             if (p >= end || *p != ')') *bad = 1;
             else p++;
         } else if (*p == '"') {
