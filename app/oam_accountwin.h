@@ -1,4 +1,4 @@
-/* GFOpenMail's account window. MIT, Copyright (c) 2026 AmigaChrome Team. */
+/* GFOpenMail's account window. MIT, Copyright (c) 2026 AmiCradle Team. */
 #ifndef OAM_ACCOUNTWIN_H
 #define OAM_ACCOUNTWIN_H
 
