@@ -18,7 +18,7 @@ Lab use only: it binds 127.0.0.1, and the account and certificate are
 throwaway ones. A lab's Amiga reaches it through openamigatls'
 tests/lab/pyhook (OPENTLS_LAB_PORTS).
 
-MIT, Copyright (c) 2026 AmigaChrome Team.
+MIT, Copyright (c) 2026 AmiCradle Team.
 """
 import argparse
 import base64

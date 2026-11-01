@@ -15,7 +15,7 @@ We are The AmiCradle Team, who build GFOpenMail alongside SacredTrees:
 ## Copyright holder
 
 GFOpenMail's own code, providers, icons and documents are
-Copyright (c) 2026 AmigaChrome Team, released under the MIT licence (`LICENSE`).
+Copyright (c) 2026 AmiCradle Team, released under the MIT licence (`LICENSE`).
 
 ## Third-party work in this repository
 
@@ -25,7 +25,7 @@ Copyright (c) 2026 AmigaChrome Team, released under the MIT licence (`LICENSE`).
 
 ### From our other repositories
 
-- **GFOpenGadTools** (`DalsinAI/opengadtools`): its library, built from a checkout beside this one (`OGT`), and the themes in `package/Themes/`, MIT, AmigaChrome Team.
+- **GFOpenGadTools** (`DalsinAI/opengadtools`): its library, built from a checkout beside this one (`OGT`), and the themes in `package/Themes/`, MIT, AmiCradle Team.
 
 ## Work we learned from
 
