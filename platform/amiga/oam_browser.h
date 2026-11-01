@@ -1,7 +1,9 @@
 /* oam_browser: opens a web address or a file in a browser (DESIGN.md 4).
  *
  * Tried in this order:
- *   1. ENV:OpenMail/Browser: a command, %s standing for the address;
+ *   1. ENV:OpenMail/Browser: a command, %s standing for the address (put
+ *      in quotes; one with '"', '`', '*', '$' or control characters is not
+ *      put on the line);
  *   2. AmigaChrome's browser, on ARexx port AMIGACHROME.BROWSER, with
  *      OPENURL address or OPENFILE path (reserved for that browser: once it
  *      answers there, OpenMail uses it with no change);
@@ -15,6 +17,7 @@
 #define OAM_BROWSER_PORT "AMIGACHROME.BROWSER"
 
 /* what: a URL ("https://...", "mailto:...") or an AmigaDOS path to a file.
+ * A link from a message goes through oam_link_for_browser first.
  * 1 when a browser took it, with how it was opened in how; 0 with the
  * reason in how. */
 int oam_browser_open(const char *what, char *how, size_t howlen);

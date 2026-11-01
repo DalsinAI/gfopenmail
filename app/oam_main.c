@@ -38,6 +38,7 @@
 #include <string.h>
 
 #include "oam_account.h"
+#include "oam_html.h"
 #include "oam_mime.h"
 #include "oam_text.h"
 #include "oam_worker.h"
@@ -800,9 +801,12 @@ static void links_window(void)
                 else if (class == IDCMP_GADGETUP && code < n && t[code]) {
                     char how[200], url[600];
                     const char *u = strchr(t[code], ' ');
-                    snprintf(url, sizeof url, "%s", u ? u + 1 : t[code]);
-                    oam_browser_open(url, how, sizeof how);
-                    set_status("%s", how);
+                    if (!oam_link_for_browser(u ? u + 1 : t[code], url, sizeof url)) {
+                        set_status("Not opened: OpenMail opens http, https and mailto links only");
+                    } else {
+                        oam_browser_open(url, how, sizeof how);
+                        set_status("%s", how);
+                    }
                 }
             }
         }

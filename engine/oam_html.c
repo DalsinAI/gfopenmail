@@ -238,3 +238,33 @@ int oam_html_to_text(const char *html, size_t len, oam_buf *text, oam_buf *links
     }
     return !text->failed && !links->failed;
 }
+
+int oam_link_for_browser(const char *link, char *out, size_t size)
+{
+    size_t n = 0;
+    const char *p;
+    if (!size) return 0;
+    out[0] = 0;
+    while (*link == ' ') link++;
+    if (strncasecmp(link, "http://", 7) && strncasecmp(link, "https://", 8) && strncasecmp(link, "mailto:", 7))
+        return 0;
+    for (p = link; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c < 32 || c == 127) break;
+        if (c == '"' || c == '`' || c == '*' || c == '$') {
+            if (n + 3 >= size) break;
+            snprintf(out + n, 4, "%%%02X", c);
+            n += 3;
+        } else {
+            if (n + 1 >= size) break;
+            out[n++] = (char)c;
+        }
+    }
+    if (*p) {                       /* refused: nothing half-made is left in out */
+        out[0] = 0;
+        return 0;
+    }
+    while (n && out[n - 1] == ' ') n--;
+    out[n] = 0;
+    return 1;
+}

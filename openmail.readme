@@ -22,7 +22,8 @@ What it does today
   tracking pixels.
 - "View in browser" opens a message's HTML in your web browser, and
   "Links..." opens any of its links: through ENV:OpenMail/Browser (a
-  command with %s), AmigaChrome's browser, or OpenURL.
+  command with %s), AmigaChrome's browser, or OpenURL. Only http, https
+  and mailto links are opened.
 - Talks to the servers from a process of its own, so the window never
   freezes while mail comes in.
 
