@@ -1,6 +1,6 @@
 /* oam_net on AmigaOS 3.x and AROS 68k: bsdsocket.library (any stack:
  * Roadshow, AmiTCP, Miami, or GFOpenSocket, AmiCradle's) and, for TLS,
- * the Team's own gfopentls.library (GFOpenTLS, DalsinAI/openamigatls). The
+ * the Team's own gfopentls.library (GFOpenTLS, DalsinAI/gfopentls). The
  * calling task opens them in oam_net_init: their bases are the task's own.
  * GFOpenTLS checks the server's certificate against its CA list (S:GFOpenTLS/,
  * and ENVARC:GFOpenTLS/certs/) and the server's name.

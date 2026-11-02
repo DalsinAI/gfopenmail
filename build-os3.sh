@@ -5,7 +5,7 @@
 # or used. Built for the 68040, soft float (no FPU code).
 #   build-os3.sh [OUT_DIR]       (default build/os3)
 #
-#   OGT     the opengadtools checkout (default ../opengadtools): GFOpenMail is
+#   OGT     the gfopengadtools checkout (default ../gfopengadtools): GFOpenMail is
 #           drawn with its lib/, as the other GFOpen apps are
 #   STOVE   the stove (default ~/AmiCradle/stoves/os32-gcc16; OS32_GCC16 comes
 #           first). It stops when given a GCC older than 16: the os32 stove's
@@ -27,8 +27,8 @@ if [ $# -ge 1 ] && { [ "$1" = "-" ] || [ -f "$1/proto/amissl.h" ]; }; then
     shift
 fi
 OUT=${1:-$HERE/build/os3}
-OGT=${OGT:-$HERE/../opengadtools}
-[ -f "$OGT/lib/ogt_look.c" ] || { echo "build-os3.sh: no opengadtools at $OGT (set OGT)"; exit 2; }
+OGT=${OGT:-$HERE/../gfopengadtools}
+[ -f "$OGT/lib/ogt_look.c" ] || { echo "build-os3.sh: no gfopengadtools at $OGT (set OGT)"; exit 2; }
 TLS="-I$HERE/third_party/opentls/include"
 mkdir -p "$OUT"
 # Soft float: -m68040 links libnix's soft libm020, not libm881

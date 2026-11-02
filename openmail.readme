@@ -48,7 +48,7 @@ pass it on, free; the copyright and licence notice stays with every
 copy. If you fork it, please say it is based on GFOpenMail by the AmiCradle
 Team (a request, not a condition).
 
-Source: https://github.com/DalsinAI/openamigamail
+Source: https://github.com/DalsinAI/gfopenmail
 
 New in 0.3.3 (19 October 2026): GFOpenTLS only. AmiSSL is no longer used or
 needed, and GFOpenMail is built with GFOpenAmigaGCC 16.2.0-open2. An error

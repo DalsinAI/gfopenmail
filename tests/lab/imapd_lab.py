@@ -15,7 +15,7 @@ AUTHENTICATE PLAIN (with or without SASL-IR), LOGIN, LIST, SELECT,
 EXAMINE, UID FETCH (summaries and whole messages), UID STORE, NOOP, IDLE
 and LOGOUT. Each connection is served in a thread of its own, until killed.
 Lab use only: it binds 127.0.0.1, and the account and certificate are
-throwaway ones. A lab's Amiga reaches it through openamigatls'
+throwaway ones. A lab's Amiga reaches it through gfopentls'
 tests/lab/pyhook (OPENTLS_LAB_PORTS).
 
 MIT, Copyright (c) 2026 AmiCradle Team.
