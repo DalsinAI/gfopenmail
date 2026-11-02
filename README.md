@@ -49,9 +49,9 @@ The fake server checks each command it receives, and a session passes only when 
 
 ## Testing on the Amiga (a lab)
 
-`tests/lab/imapd_lab.py PORT USER PASSWORD --security tls|starttls|plain --cert C --key K` is a throwaway IMAP server on the PC's 127.0.0.1 (Python's own `ssl`): one account, an INBOX of made-up messages (the newest 256 KiB, to move some data through TLS) and a few folders, one with a Latin-1 name. A lab's Amiga reaches it through openamigatls' `tests/lab/pyhook` (`OPENTLS_LAB_PORTS`).
+`tests/lab/imapd_lab.py PORT USER PASSWORD --security tls|starttls|plain --cert C --key K` is a throwaway IMAP server on the PC's 127.0.0.1 (Python's own `ssl`): one account, an INBOX of made-up messages (the newest 256 KiB, to move some data through TLS) and a few folders, one with a Latin-1 name. A lab's Amiga reaches it through gfopentls' `tests/lab/pyhook` (`OPENTLS_LAB_PORTS`).
 
-0.3.3 on 19 October 2026 (lab copied from Instance-32: AmigaOS 3.2.3, AC090 68040, GFOpenSocket; gfopentls.library 1.2 and gfopencrypto.library 2.0 from openamigatls main e7c0e2d, built with GFOpenAmigaGCC 16.2.0-open2), with a throwaway authority in `ENVARC:GFOpenTLS/certs/`:
+0.3.3 on 19 October 2026 (lab copied from Instance-32: AmigaOS 3.2.3, AC090 68040, GFOpenSocket; gfopentls.library 1.2 and gfopencrypto.library 2.0 from gfopentls main e7c0e2d, built with GFOpenAmigaGCC 16.2.0-open2), with a throwaway authority in `ENVARC:GFOpenTLS/certs/`:
 
 - GFOpenMailCheck over IMAPS and over STARTTLS, the server's certificate from that authority: TLS 1.2 (ECDHE-RSA-AES256-GCM-SHA384), signed in, 5 folders (Grüße shown right), the newest 10 subjects with RFC 2047 words decoded and the unread ones marked;
 - the probe (`-`): each step, then "Connected over TLS, its certificate checked";

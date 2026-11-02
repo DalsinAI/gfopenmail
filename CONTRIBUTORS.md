@@ -25,7 +25,7 @@ Copyright (c) 2026 AmiCradle Team, released under the MIT licence (`LICENSE`).
 
 ### From our other repositories
 
-- **GFOpenGadTools** (`DalsinAI/opengadtools`): its library, built from a checkout beside this one (`OGT`), and the themes in `package/Themes/`, MIT, AmiCradle Team.
+- **GFOpenGadTools** (`DalsinAI/gfopengadtools`): its library, built from a checkout beside this one (`OGT`), and the themes in `package/Themes/`, MIT, AmiCradle Team.
 
 ## Work we learned from
 
@@ -35,7 +35,7 @@ GFOpenMail is written from the standards and the providers' OAuth notes.
 
 ## Used at build or run time, not included
 
-- **GFOpenTLS** (`gfopentls.library`, the Team's own, DalsinAI/openamigatls): TLS on the Amiga, opened from the copy installed there. (GFOpenMail 0.1 to 0.3.2 also used AmiSSL 5 that way.)
+- **GFOpenTLS** (`gfopentls.library`, the Team's own, DalsinAI/gfopentls): TLS on the Amiga, opened from the copy installed there. (GFOpenMail 0.1 to 0.3.2 also used AmiSSL 5 that way.)
 - **OpenSSL 3**: TLS for the host tests.
 
 Amiga, AmigaOS and other product names are trademarks of their respective
