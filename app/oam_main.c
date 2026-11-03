@@ -802,7 +802,7 @@ static void links_window(void)
                     char how[200], url[600];
                     const char *u = strchr(t[code], ' ');
                     if (!oam_link_for_browser(u ? u + 1 : t[code], url, sizeof url)) {
-                        set_status("Not opened: GFOpenMail opens http, https and mailto links only");
+                        set_status("Not opened: GFOpenMail opens http, https and mailto links only", NULL);
                     } else {
                         oam_browser_open(url, how, sizeof how);
                         set_status("%s", how);
