@@ -56,7 +56,7 @@
 
 struct Library *GadToolsBase = NULL;      /* ours, not libnix's auto-open stub */
 
-#define VERSION_TEXT "GFOpenMail 0.3.4 (30.10.2026)"
+#define VERSION_TEXT "GFOpenMail 0.3.5 (4.11.2026)"
 static const char version[] __attribute__((used)) = "$VER: " VERSION_TEXT;
 #define ACCOUNT_FILE "ENV:GFOpenMail/Account"
 
