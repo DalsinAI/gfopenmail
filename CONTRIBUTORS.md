@@ -21,7 +21,6 @@ Copyright (c) 2026 AmiCradle Team, released under the MIT licence (`LICENSE`).
 
 | Component | Where | Authors | Licence |
 | --- | --- | --- | --- |
-| Boxie icons: the drawer icon, converted to OS 3.2 GlowIcons | `package/icons/Drawer.info` | Damir Šijaković | MIT (`package/icons/LICENCE.Boxie`) |
 
 ### From our other repositories
 

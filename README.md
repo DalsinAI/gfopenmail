@@ -77,9 +77,8 @@ fallback picture.
 - **`package/icons/GFOpenMail.info`**, the envelope. `tools/envelope_art.py`
   draws it in full colour, and `tools/make_icons.js` turns it into an icon
   with ACBuild's `amiga-icon.js`.
-- **`package/icons/Drawer.info`**, the drawer. It comes from the Boxie icon
-  set by Damir Šijaković (MIT, `package/icons/LICENCE.Boxie`), converted to
-  OS 3.2 GlowIcons by ACBuild.
+- **`package/icons/Drawer.info`**, the drawer: our own Soft 3D folder (GFOpenUp's
+  `tools/soft3d_kinds_art.py`), a GlowIcon.
 
 ## Contributors
 
